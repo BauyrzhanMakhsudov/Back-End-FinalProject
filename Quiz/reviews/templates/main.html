@@ -1,0 +1,107 @@
+<!--{%load static%}-->
+<!--//<!DOCTYPE html>-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alimingoi.kz</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+</head>
+<body>
+    {%block navbar%}
+        {%include 'navbar.html'%}
+    {%endblock%}
+    {% if request.user.is_staff %}
+        <div class="mt-5 ms-5 d-flex justify-content-center" id="ddd">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuiz">
+           + ADD QUIZ
+        </button>
+
+        <div class="modal fade" id="addQuiz" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Quiz</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'addQuiz' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row mt-2">
+                                          <div class="col-6">
+                                    Quiz name:
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" placeholder="Quiz name..." class="form-control" name="quiz_name">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    Quiz code:
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" placeholder="Quiz code..." class="form-control" name="quiz_code">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12 mb-2">
+                                    Quiz description:
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="quiz_description" placeholder="Quiz description..." class="form-control" rows="10"></textarea>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12 mb-2">
+                                    Quiz image:
+                                </div>
+                                <div class="col-6">
+                                    <input type="file" name="quiz_photo" class="form-control" placeholder="Quiz image...">
+                                </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Quiz</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {%endif%}
+    {% if c == 1 %}
+        <script>
+            document.getElementById("ddd").style.display = 'none';
+        </script>
+    {% endif %}
+    <div class="d-flex flex-wrap">
+    {% for quiz in quizs %}
+    <div class="card " style="width: 16rem;margin-top: 2rem; margin-left: 3rem; border-radius: 8px" id="cc">
+        <img src="{{quiz.quiz_photo.url}}" id="i" height="200" style="border-radius: 8px">
+        <script>
+            console.log(document.getElementById("i").src)
+        </script>
+        <div class="card-body ">
+            <h5 class="card-title text-center" >{{ quiz.quiz_name }}</h5>
+<!--            <p class="card-text">{{ quiz.quiz_code }}</p>-->
+            <code class="card-text text-dark">{{ quiz.quiz_description }}</code>
+        </div>
+
+        <div class="card-footer">
+            <a href="/join/{{quiz.id}}" class="btn btn-success">JOIN</a>
+            {% if request.user.is_staff %}
+            <a href="/details/{{quiz.id}}" class="btn btn-primary">DETAILS</a>
+            <a href="addQuestion/{{quiz.id}}" class="btn btn-success ms-5 w-10 d-flex justify-content-center mt-3 mx-auto">+ ADD QUESTION</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endfor %}
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
